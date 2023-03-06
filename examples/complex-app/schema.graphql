@@ -22,7 +22,7 @@ input CreatePlayerInput {
 input CreatePointInput {
   gameId: ID!
   playerIds: [ID!]!
-  scored: Boolean!
+  scored: Boolean = false
   startedOnOffense: Boolean!
 }
 

@@ -21,7 +21,7 @@ builder.prismaNode('Point', {
 export const AddPointInput = builder.inputType('CreatePointInput', {
   fields: (t) => ({
     gameId: t.id({ required: true }),
-    scored: t.boolean({ required: true }),
+    scored: t.boolean({ required: false, defaultValue: false }),
     startedOnOffense: t.boolean({ required: true }),
     playerIds: t.idList({ required: true }),
   }),

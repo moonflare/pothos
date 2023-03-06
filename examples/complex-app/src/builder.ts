@@ -7,6 +7,8 @@ import RelayPlugin from '@pothos/plugin-relay';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import ValidationPlugin from '@pothos/plugin-validation';
+import DirectivePlugin from '@pothos/plugin-directives';
+import FederationPlugin from '@pothos/plugin-federation';
 import type PrismaTypes from '../prisma/generated';
 import { db } from './db';
 
@@ -31,6 +33,8 @@ export const builder = new SchemaBuilder<{
     DataloaderPlugin,
     SimpleObjectsPlugin,
     ValidationPlugin,
+    DirectivePlugin,
+    FederationPlugin,
   ],
   authScopes: () => ({}),
   relayOptions: {

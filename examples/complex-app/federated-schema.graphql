@@ -1,17 +1,20 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key", "@shareable", "@inaccessible", "@tag", "@provides", "@requires", "@external", "@extends", "@override"])
+
 input AddPlayerToTeamInput {
-  player: CreatePlayerInput!
   teamId: ID!
+  player: CreatePlayerInput!
 }
 
 input AddPlayersToTeamInput {
-  players: [CreatePlayerInput!]!
   teamId: ID!
+  players: [CreatePlayerInput!]!
 }
 
 input CreateGame {
+  teamId: ID!
   complete: Boolean
   opponentName: String!
-  teamId: ID!
 }
 
 input CreatePlayerInput {
@@ -21,9 +24,9 @@ input CreatePlayerInput {
 
 input CreatePointInput {
   gameId: ID!
-  playerIds: [ID!]!
   scored: Boolean!
   startedOnOffense: Boolean!
+  playerIds: [ID!]!
 }
 
 input CreateTeamInput {
@@ -37,26 +40,26 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Game implements Node {
-  complete: Boolean!
-  createdAt: DateTime!
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  complete: Boolean!
   opponentName: String!
   points: [Point!]!
-  score: GameScore!
   team: Team!
-  updatedAt: DateTime!
+  score: GameScore!
 }
 
 type GameScore {
-  opponentScore: Int!
   ownScore: Int!
+  opponentScore: Int!
 }
 
 type Mutation {
+  createGame(input: CreateGame!): Game!
   addPlayerToTeam(input: AddPlayerToTeamInput!): Team
   addPlayersToTeam(input: AddPlayersToTeamInput!): Team
   addPoint(input: CreatePointInput!): Point
-  createGame(input: CreateGame!): Game!
   createTeam(input: CreateTeamInput!): Team
 }
 
@@ -65,116 +68,108 @@ interface Node {
 }
 
 type PageInfo {
-  endCursor: String
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
   startCursor: String
+  endCursor: String
 }
 
 type Player implements Node {
-  createdAt: DateTime!
-  games(after: String, before: String, first: Int, last: Int): PlayerGamesConnection!
   id: ID!
-  name: String!
-  points(after: String, before: String, first: Int, last: Int): PlayerPointsConnection!
-  team: Team!
+  createdAt: DateTime!
   updatedAt: DateTime!
+  name: String!
+  team: Team!
+  points(before: String, after: String, first: Int, last: Int): PlayerPointsConnection!
+  games(before: String, after: String, first: Int, last: Int): PlayerGamesConnection!
 }
 
 type PlayerGamesConnection {
-  edges: [PlayerGamesConnectionEdge]!
   pageInfo: PageInfo!
+  edges: [PlayerGamesConnectionEdge]!
 }
 
 type PlayerGamesConnectionEdge {
-  cursor: String!
   node: Game!
+  cursor: String!
 }
 
 type PlayerPointsConnection {
-  edges: [PlayerPointsConnectionEdge]!
   pageInfo: PageInfo!
+  edges: [PlayerPointsConnectionEdge]!
 }
 
 type PlayerPointsConnectionEdge {
-  cursor: String!
   node: Point!
+  cursor: String!
 }
 
 type Point implements Node {
-  createdAt: DateTime!
-  game: Game!
   id: ID!
-  players: [Player!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   scored: Boolean!
   startedOnOffense: Boolean!
+  players: [Player!]!
+  game: Game!
   team: Team!
-  updatedAt: DateTime!
 }
 
 type Query {
-  _service: _Service!
-  game(id: ID!): Game
-  games(after: String, before: String, first: Int, last: Int): QueryGamesConnection!
   node(id: ID!): Node
   nodes(ids: [ID!]!): [Node]!
+  games(before: String, after: String, first: Int, last: Int): QueryGamesConnection!
+  game(id: ID!): Game
+  teams(before: String, after: String, first: Int, last: Int): QueryTeamsConnection!
   team(id: ID!): Team
-  teams(after: String, before: String, first: Int, last: Int): QueryTeamsConnection!
 }
 
 type QueryGamesConnection {
-  edges: [QueryGamesConnectionEdge]!
   pageInfo: PageInfo!
+  edges: [QueryGamesConnectionEdge]!
 }
 
 type QueryGamesConnectionEdge {
-  cursor: String!
   node: Game!
+  cursor: String!
 }
 
 type QueryTeamsConnection {
-  edges: [QueryTeamsConnectionEdge]!
   pageInfo: PageInfo!
+  edges: [QueryTeamsConnectionEdge]!
 }
 
 type QueryTeamsConnectionEdge {
-  cursor: String!
   node: Team!
+  cursor: String!
 }
 
 type Team implements Node {
-  createdAt: DateTime!
-  games(after: String, before: String, first: Int, last: Int): TeamGamesConnection!
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   name: String!
   players: [Player!]!
-  points(after: String, before: String, first: Int, last: Int): TeamPointsConnection!
-  updatedAt: DateTime!
+  points(before: String, after: String, first: Int, last: Int): TeamPointsConnection!
+  games(before: String, after: String, first: Int, last: Int): TeamGamesConnection!
 }
 
 type TeamGamesConnection {
-  edges: [TeamGamesConnectionEdge]!
   pageInfo: PageInfo!
+  edges: [TeamGamesConnectionEdge]!
 }
 
 type TeamGamesConnectionEdge {
-  cursor: String!
   node: Game!
+  cursor: String!
 }
 
 type TeamPointsConnection {
-  edges: [TeamPointsConnectionEdge]!
   pageInfo: PageInfo!
+  edges: [TeamPointsConnectionEdge]!
 }
 
 type TeamPointsConnectionEdge {
-  cursor: String!
   node: Point!
-}
-
-type _Service {
-  """
-  The sdl representing the federated service capabilities. Includes federation directives, removes federation types, and includes rest of full schema after schema directives have been applied
-  """
-  sdl: String
+  cursor: String!
 }

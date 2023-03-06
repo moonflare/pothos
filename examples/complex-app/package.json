@@ -16,6 +16,7 @@
     "seed": "node -r @swc-node/register prisma/seed.ts"
   },
   "dependencies": {
+    "@apollo/subgraph": "2.3.2",
     "@faker-js/faker": "^7.6.0",
     "@graphql-typed-document-node/core": "^3.1.1",
     "@pothos/core": "^3.25.0",
@@ -26,6 +27,8 @@
     "@pothos/plugin-scope-auth": "workspace:*",
     "@pothos/plugin-simple-objects": "workspace:*",
     "@pothos/plugin-validation": "workspace:*",
+    "@pothos/plugin-directives": "workspace:*",
+    "@pothos/plugin-federation": "workspace:*",
     "@prisma/client": "^4.9.0",
     "graphql": "16.6.0",
     "graphql-scalars": "^1.20.1",

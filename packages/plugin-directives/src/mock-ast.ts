@@ -4,7 +4,9 @@
 import './global-types';
 import {
   ArgumentNode,
+  astFromValue,
   ConstDirectiveNode,
+  ConstValueNode,
   DirectiveNode,
   EnumValueDefinitionNode,
   FieldDefinitionNode,
@@ -237,10 +239,13 @@ function inputFieldNodes(fields: GraphQLInputFieldMap): InputValueDefinitionNode
   return Object.keys(fields).map((fieldName) => {
     const field: GraphQLInputField = fields[fieldName];
 
+    const defaultValueNode = astFromValue(field.defaultValue, field.type) as ConstValueNode;
+
     field.astNode = {
       kind: Kind.INPUT_VALUE_DEFINITION,
       description: field.description ? { kind: Kind.STRING, value: field.description } : undefined,
       name: { kind: Kind.NAME, value: fieldName },
+      defaultValue: field.defaultValue === undefined ? undefined : defaultValueNode,
       type: typeNode(field.type),
       directives: directiveNodes(
         field.extensions?.directives as DirectiveList,
@@ -254,10 +259,13 @@ function inputFieldNodes(fields: GraphQLInputFieldMap): InputValueDefinitionNode
 
 function argumentNodes(args: readonly GraphQLArgument[]): InputValueDefinitionNode[] {
   return args.map((arg): InputValueDefinitionNode => {
+    const defaultValueNode = astFromValue(arg.defaultValue, arg.type) as ConstValueNode;
+
     arg.astNode = {
       kind: Kind.INPUT_VALUE_DEFINITION,
       description: arg.description ? { kind: Kind.STRING, value: arg.description } : undefined,
       name: { kind: Kind.NAME, value: arg.name },
+      defaultValue: arg.defaultValue === undefined ? undefined : defaultValueNode,
       type: typeNode(arg.type),
       directives: directiveNodes(
         arg.extensions?.directives as DirectiveList,

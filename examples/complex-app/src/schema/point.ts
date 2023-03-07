@@ -23,6 +23,12 @@ export const AddPointInput = builder.inputType('CreatePointInput', {
     gameId: t.id({ required: true }),
     scored: t.boolean({ required: false, defaultValue: false }),
     startedOnOffense: t.boolean({ required: true }),
+    order: t.field({
+      defaultValue: 'ASC',
+      type: builder.enumType('Sort', {
+        values: ['ASC', 'DESC'] as const,
+      }),
+    }),
     playerIds: t.idList({ required: true }),
   }),
 });
@@ -32,7 +38,7 @@ builder.mutationField('addPoint', (t) =>
     type: 'Point',
     nullable: true,
     args: {
-      input: t.arg({ type: AddPointInput, required: true }),
+      input: t.arg({ type: AddPointInput, required: false, defaultValue: {} }),
     },
     resolve: async (query, _, { input }) => {
       const game = await db.game.findUniqueOrThrow({ where: { id: parseID(input.gameId) } });

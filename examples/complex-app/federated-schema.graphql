@@ -24,8 +24,9 @@ input CreatePlayerInput {
 
 input CreatePointInput {
   gameId: ID!
-  scored: Boolean
+  scored: Boolean = false
   startedOnOffense: Boolean!
+  order: Sort = ASC
   playerIds: [ID!]!
 }
 
@@ -59,7 +60,7 @@ type Mutation {
   createGame(input: CreateGame!): Game!
   addPlayerToTeam(input: AddPlayerToTeamInput!): Team
   addPlayersToTeam(input: AddPlayersToTeamInput!): Team
-  addPoint(input: CreatePointInput!): Point
+  addPoint(input: CreatePointInput = {}): Point
   createTeam(input: CreateTeamInput!): Team
 }
 
@@ -142,6 +143,11 @@ type QueryTeamsConnection {
 type QueryTeamsConnectionEdge {
   node: Team!
   cursor: String!
+}
+
+enum Sort {
+  ASC
+  DESC
 }
 
 type Team implements Node {
